@@ -11,8 +11,12 @@ COPY src src
 COPY tsconfig.json .
 COPY prisma prisma
 
+RUN bunx prisma generate
 
-# ENV NODE_ENV=production
-CMD ["bun", "src/index.ts"]
+RUN bunx prisma migrate deploy
+
+RUN bun build
+
+CMD ["bun", "start"]
 
 EXPOSE 3000
