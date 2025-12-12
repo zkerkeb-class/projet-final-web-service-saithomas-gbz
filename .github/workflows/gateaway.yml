@@ -1,0 +1,30 @@
+name: gateaway
+
+on:
+  pull_request:
+    paths:
+      - "api-gateaway/**"
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: oven-sh/setup-bun@v1
+        with:
+            bun-version: latest
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          cd api-gateaway
+          bun install
+
+      - name: Build Gateaway api
+        run: |
+          cd api-gateaway
+          bun run build
