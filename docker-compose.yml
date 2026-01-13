@@ -1,0 +1,35 @@
+services:
+  postgres:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data:Z
+    environment:
+      POSTGRES_DB: ${DB_KEYCLOAK}
+      POSTGRES_USER: ${DB_USER_KEYCLOAK}
+      POSTGRES_PASSWORD: ${DB_PASSWORD_KEYCLOAK}
+    networks:
+      - keycloak_network
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    command: start-dev
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/${DB_KEYCLOAK}
+      KC_DB_USERNAME: ${DB_USER_KEYCLOAK}
+      KC_DB_PASSWORD: ${DB_PASSWORD_KEYCLOAK}
+      KEYCLOAK_ADMIN: ${ADMIN_KEYCLOAK}
+      KEYCLOAK_ADMIN_PASSWORD: ${ADMIN_PASSWORD_KEYCLOAK}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    networks:
+      - keycloak_network
+
+networks:
+  keycloak_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
